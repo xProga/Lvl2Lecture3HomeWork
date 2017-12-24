@@ -1,0 +1,7 @@
+C:\Users\Proga\Documents\Visual Studio 2017\Projects\Lvl2Lecture1HomeWork\Lvl2Lecture1HomeWork\bin\Debug\Lvl2Lecture1HomeWork.exe.config
+C:\Users\Proga\Documents\Visual Studio 2017\Projects\Lvl2Lecture1HomeWork\Lvl2Lecture1HomeWork\bin\Debug\Lvl2Lecture1HomeWork.exe
+C:\Users\Proga\Documents\Visual Studio 2017\Projects\Lvl2Lecture1HomeWork\Lvl2Lecture1HomeWork\bin\Debug\Lvl2Lecture1HomeWork.pdb
+C:\Users\Proga\Documents\Visual Studio 2017\Projects\Lvl2Lecture1HomeWork\Lvl2Lecture1HomeWork\obj\Debug\Lvl2Lecture1HomeWork.csprojResolveAssemblyReference.cache
+C:\Users\Proga\Documents\Visual Studio 2017\Projects\Lvl2Lecture1HomeWork\Lvl2Lecture1HomeWork\obj\Debug\Lvl2Lecture1HomeWork.csproj.CoreCompileInputs.cache
+C:\Users\Proga\Documents\Visual Studio 2017\Projects\Lvl2Lecture1HomeWork\Lvl2Lecture1HomeWork\obj\Debug\Lvl2Lecture1HomeWork.exe
+C:\Users\Proga\Documents\Visual Studio 2017\Projects\Lvl2Lecture1HomeWork\Lvl2Lecture1HomeWork\obj\Debug\Lvl2Lecture1HomeWork.pdb
