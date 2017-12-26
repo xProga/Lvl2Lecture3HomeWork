@@ -13,7 +13,8 @@ namespace Lvl2Lecture1HomeWork
     {
         private static Timer _timer = new Timer();
         public static Random Rnd = new Random();
-        private static Ship _ship = new Ship(new Point(10, 400), new Point(5, 5), new Size(10, 10));        private static BufferedGraphicsContext _context;
+        private static Ship _ship = new Ship(new Point(10, 400), new Point(5, 5), new Size(10, 10));
+        private static BufferedGraphicsContext _context;
         public static BufferedGraphics Buffer;
         // Свойства
         // Ширина и высота игрового поля
@@ -38,8 +39,13 @@ namespace Lvl2Lecture1HomeWork
         private static void Form_KeyDown(object sender, KeyEventArgs e)
         {
             GameLogDelegate msg = new GameLogDelegate(GameLog);
-            if (e.KeyCode == Keys.ControlKey) _bullet = new Bullet(new Point(_ship.Rect.X + 10, _ship.Rect.Y + 4),
-            new Point(4, 0), new Size(4, 1));
+            //if (e.KeyCode == Keys.ControlKey) _bullet = new Bullet(new Point(_ship.Rect.X + 10, _ship.Rect.Y + 4), new Point(4, 0), new Size(4, 1));
+            if (e.KeyCode == Keys.ControlKey)
+            {
+                _listBullets.Add(new Bullet(new Point(_ship.Rect.X + 10, _ship.Rect.Y + 4), new Point(4, 0), new Size(4, 1)));
+                if (_listBullets.Count > 100) _listBullets.Remove(_listBullets[0]);
+            }
+
             if (e.KeyCode == Keys.Up) _ship.Up();
             if (e.KeyCode == Keys.Down) _ship.Down();
             if (e.KeyCode == Keys.Space && _ship.CountFirstAidKit > 0)
@@ -48,7 +54,8 @@ namespace Lvl2Lecture1HomeWork
                 //GameLog("You used First Aid Kid and recover 15 points of Energy");
                 msg.Invoke("You used First Aid Kid and recover 15 points of Energy");
             }
-        }
+        }
+
 
         public static void Init(Form form)
         {
@@ -87,7 +94,7 @@ namespace Lvl2Lecture1HomeWork
             Buffer.Graphics.Clear(Color.Black);
             foreach (BaseObject obj in _objs)
                 obj.Draw();
-            foreach (Asteroid a in _asteroids)
+            foreach (Asteroid a in _listAsteroids)
             {
                 a?.Draw();
             }
@@ -101,24 +108,30 @@ namespace Lvl2Lecture1HomeWork
 
         public static BaseObject[] _objs;
         private static Bullet _bullet;
+        private static List<Bullet> _listBullets = new List<Bullet>();
         private static Asteroid[] _asteroids;
+        private static List<Asteroid> _listAsteroids;
         public static void Load()
         {
             _objs = new BaseObject[30];
             _bullet = new Bullet(new Point(0, 200), new Point(5, 0), new Size(4, 1));
             _asteroids = new Asteroid[3];
             var rnd = new Random();
+            int r = rnd.Next(5, 50);
+            _listAsteroids = new List<Asteroid>() { new Asteroid(new Point(1000, rnd.Next(0, Game.Height)), new Point(-r / 5, r), new Size(r, r)) };
             for (var i = 0; i < _objs.Length; i++)
             {
-                int r = rnd.Next(5, 50);
+                r = rnd.Next(5, 50);
                 _objs[i] = new Star(new Point(1000, rnd.Next(0, Game.Height)), new Point(-r, r), new Size(3, 3));
             }
-            for (var i = 0; i < _asteroids.Length; i++)
-            {
-                int r = rnd.Next(5, 50);
-                _asteroids[i] = new Asteroid(new Point(1000, rnd.Next(0, Game.Height)), new Point(-r / 5, r), new
-                Size(r, r));
-            }
+            //for (var i = 0; i < _listAsteroids.Count; i++)
+            //{
+            //    r = rnd.Next(5, 50);
+            //    _listAsteroids.Add(new Asteroid(new Point(1000, rnd.Next(0, Game.Height)), new Point(-r / 5, r), new Size(r, r)));
+            //    //_asteroids[i] = new Asteroid(new Point(1000, rnd.Next(0, Game.Height)), new Point(-r / 5, r), new Size(r, r));
+            //}
+            r = rnd.Next(5, 50);
+            _listAsteroids.Add(new Asteroid(new Point(1000, rnd.Next(0, Game.Height)), new Point(-r / 5, r), new Size(r, r)));
         }
 
         public static void Update()
@@ -126,21 +139,41 @@ namespace Lvl2Lecture1HomeWork
             GameLogDelegate msg = new GameLogDelegate(GameLog);
             foreach (BaseObject obj in _objs) obj.Update();
             _bullet?.Update();
-            for (var i = 0; i < _asteroids.Length; i++)
+            int nullCount = 0;
+            //for (var i = 0; i < _asteroids.Length; i++)
+            for (var i = 0; i < _listAsteroids.Count; i++)
             {
-                if (_asteroids[i] == null) continue;
-                _asteroids[i].Update();
-                if (_bullet != null && _bullet.Collision(_asteroids[i]))
+                //if (_asteroids[i] == null) continue;
+                if (_listAsteroids[i] == null)
+                {
+                    nullCount++;
+                    if (nullCount == _listAsteroids.Count)
+                    {
+                        var rand = new Random();
+                        var r = rand.Next(5, 50);
+                        _listAsteroids.Add(new Asteroid(new Point(1000, rand.Next(0, Game.Height)), new Point(-r / 5, r), new Size(r, r)));
+                        for (int j = 0; j < _listAsteroids.Count; j++)
+                        {
+                            r = rand.Next(5, 50);
+                            _listAsteroids[j] = new Asteroid(new Point(1000, rand.Next(0, Game.Height)), new Point(-r / 5, r), new Size(r, r));
+                        }
+                    }
+                    continue;
+                }
+                //_asteroids[i].Update();
+                _listAsteroids[i].Update();
+                if (_bullet != null && _bullet.Collision(_listAsteroids[i]))
                 {
                     System.Media.SystemSounds.Hand.Play();
-                    _asteroids[i] = null;
+                    //_asteroids[i] = null;
+                    _listAsteroids[i] = null;
                     _bullet = null;
                     _ship?.AddScore(100);
                     //GameLog($"You get 100 points of score for destroying Asteroid!");
                     msg.Invoke($"You get 100 points of score for destroying Asteroid!");
                     continue;
                 }
-                if (!_ship.Collision(_asteroids[i])) continue;
+                if (!_ship.Collision(_listAsteroids[i])) continue;
                 var rnd = new Random();
                 int dmg = rnd.Next(1, 10);
                 _ship?.EnergyLow(dmg);
